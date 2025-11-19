@@ -65,7 +65,7 @@ class PimpBunnyIE(InfoExtractor):
                     'ext': 'mp4',
                 })
 
-        self._sort_formats(formats)
+        # self._sort_formats(formats)
 
         # 3. استخراج متادیتای دیگر
         thumbnail = self._html_search_meta(['og:image', 'twitter:image'], webpage, 'thumbnail')
