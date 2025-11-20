@@ -307,7 +307,7 @@ class PornHubIE(PornHubBaseIE):
              r'(?s)<h1[^>]+class=["\']title["\'][^>]*>(?P<title>.+?)</h1>',
              r'<div[^>]+data-video-title=(["\'])(?P<title>(?:(?!\1).)+)\1',
              r'shareTitle["\']\s*[=:]\s*(["\'])(?P<title>(?:(?!\1).)+)\1'),
-            webpage, 'title', group='title')
+            webpage, 'title', group='title', default=None) # اضافه کردن default=None
 
         video_urls = []
         video_urls_set = set()
@@ -317,6 +317,8 @@ class PornHubIE(PornHubBaseIE):
             self._search_regex(
                 r'var\s+flashvars_\d+\s*=\s*({.+?});', webpage, 'flashvars', default='{}'),
             video_id)
+        if not title and flashvars:
+            title = flashvars.get('video_title')
         if flashvars:
             subtitle_url = url_or_none(flashvars.get('closedCaptionsFile'))
             if subtitle_url:
