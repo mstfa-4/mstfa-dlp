@@ -317,7 +317,7 @@ class PornHubIE(PornHubBaseIE):
 
         flashvars = self._parse_json(
             self._search_regex(
-                r'var\s+flashvars_\d+\s*=\s*({.+?});', webpage, 'flashvars', default='{}'),
+                r'(?s)var\s+flashvars_\d+\s*=\s*({.+?});', webpage, 'flashvars', default='{}'),
             video_id)
         if not title and flashvars:
             title = flashvars.get('video_title')
