@@ -316,7 +316,11 @@ class PornHubIE(PornHubBaseIE):
         subtitles = {}
 
         flashvars = self._search_json(
-            r'(?s)var\s+(?:flashvars_\d+|VIDEO_SHOW)\s*=', webpage, 'flashvars', video_id, default={})
+            r'var\s+VIDEO_SHOW\s*=', webpage, 'VIDEO_SHOW', video_id, default=None)
+
+        if not flashvars:
+            flashvars = self._search_json(
+                r'var\s+flashvars_\d+\s*=', webpage, 'flashvars', video_id, default={})
         if not title and flashvars:
             title = flashvars.get('video_title')
         if flashvars:
