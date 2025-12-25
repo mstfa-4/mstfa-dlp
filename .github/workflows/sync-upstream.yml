@@ -1,0 +1,46 @@
+name: Scheduled Upstream Sync
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    # اجرا به صورت خودکار هر روز ساعت 00:00 (به وقت جهانی)
+    - cron: '0 0 * * *'
+  # امکان اجرای دستی از تب Actions
+  workflow_dispatch:
+
+jobs:
+  sync_latest_from_upstream:
+    runs-on: ubuntu-latest
+    name: Sync latest commits from upstream repo
+
+    steps:
+    # 1. دریافت کدهای فعلی
+    - name: Checkout target repo
+      uses: actions/checkout@v3
+
+    # 2. اجرای عملیات سینک
+    - name: Sync upstream changes
+      id: sync
+      uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+      with:
+        # نام مخزن اصلی (Parent) که از آن فورک کرده‌اید
+        upstream_sync_repo: yt-dlp/yt-dlp
+        # نام برنچ مخزن اصلی (معمولاً master یا main است)
+        upstream_sync_branch: master
+        # نام برنچ مخزن شما که می‌خواهید آپدیت شود
+        target_sync_branch: master
+        # توکن امنیتی گیت‌هاب (نیازی به ساخت نیست، خودکار است)
+        target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+        # حالت تست خاموش است تا تغییرات واقعاً اعمال شوند
+        test_mode: false
+
+    # 3. نمایش نتیجه در لاگ‌ها
+    - name: New commits found
+      if: steps.sync.outputs.has_new_commits == 'true'
+      run: echo "New commits were found to sync."
+
+    - name: No new commits
+      if: steps.sync.outputs.has_new_commits == 'false'
+      run: echo "There were no new commits."
